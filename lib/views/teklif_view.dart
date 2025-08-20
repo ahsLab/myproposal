@@ -13,6 +13,7 @@ import '../viewmodels/teklif_viewmodel.dart';
 import '../viewmodels/firma_viewmodel.dart';
 import '../viewmodels/musteri_viewmodel.dart';
 import '../utils/pdf_saver.dart';
+import '../utils/localization_helper.dart';
 
 class TeklifView extends StatefulWidget {
   const TeklifView({super.key});
@@ -55,7 +56,7 @@ class _TeklifViewState extends State<TeklifView> {
     final fiyat = double.tryParse(_fiyatController.text) ?? 0;
 
     Provider.of<TeklifViewModel>(context, listen: false)
-        .addSatir(islemAdi, adet, fiyat);
+        .addSatir(LocalizationHelper.capitalizeWords(islemAdi), adet, fiyat);
 
     _islemController.clear();
     _adetController.clear();
@@ -322,14 +323,14 @@ class _TeklifViewState extends State<TeklifView> {
     final musteriList = Provider.of<MusteriViewModel>(context).musteriler;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Teklif Oluştur")),
+      appBar: AppBar(title: Text(LocalizationHelper.getString(context, 'createProposal'))),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             DropdownButton<Firma>(
               value: _selectedFirma,
-              hint: const Text("Firma Seçin"),
+              hint: Text(LocalizationHelper.getString(context, 'companyName')),
               isExpanded: true,
               items: firmaList
                   .map((f) => DropdownMenuItem(value: f, child: Text(f.isim)))
@@ -338,7 +339,7 @@ class _TeklifViewState extends State<TeklifView> {
             ),
             DropdownButton<Musteri>(
               value: _selectedMusteri,
-              hint: const Text("Müşteri Seçin"),
+              hint: Text(LocalizationHelper.getString(context, 'customerName')),
               isExpanded: true,
               items: musteriList
                   .map((m) => DropdownMenuItem(
@@ -351,20 +352,20 @@ class _TeklifViewState extends State<TeklifView> {
             const Divider(height: 32),
             TextField(
               controller: _islemController,
-              decoration: const InputDecoration(labelText: "İşlem Adı"),
+              decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'itemDescription')),
             ),
             TextField(
               controller: _adetController,
-              decoration: const InputDecoration(labelText: "Adet"),
+              decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'quantity')),
               keyboardType: TextInputType.number,
             ),
             TextField(
               controller: _fiyatController,
-              decoration: const InputDecoration(labelText: "Birim Fiyat"),
+              decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'unitPrice')),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 8),
-            ElevatedButton(onPressed: _addSatir, child: const Text("Satır Ekle")),
+            ElevatedButton(onPressed: _addSatir, child: Text(LocalizationHelper.getString(context, 'add'))),
             const Divider(height: 32),
             ...teklifViewModel.satirlar.map(
                   (s) => ListTile(
@@ -380,7 +381,7 @@ class _TeklifViewState extends State<TeklifView> {
             ),
             TextField(
               controller: _notController,
-              decoration: const InputDecoration(labelText: "Not"),
+              decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'notes')),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
@@ -393,7 +394,7 @@ class _TeklifViewState extends State<TeklifView> {
                   indirim: double.tryParse(_indirimController.text),
                   not: _notController.text.trim().isEmpty
                       ? null
-                      : _notController.text.trim(),
+                      : LocalizationHelper.capitalizeWords(_notController.text.trim()),
                 );
 
                 await Provider.of<TeklifViewModel>(context, listen: false)
@@ -403,7 +404,7 @@ class _TeklifViewState extends State<TeklifView> {
                 if (!mounted) return;
                 Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
               },
-              child: const Text("PDF Oluştur ve Kaydet"),
+              child: Text(LocalizationHelper.getString(context, 'generatePDF')),
             ),
           ],
         ),

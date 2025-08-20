@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'firebase_options.dart';
 import 'viewmodels/auth_viewmodel.dart';
 import 'viewmodels/firma_viewmodel.dart';
 import 'viewmodels/musteri_viewmodel.dart';
 import 'viewmodels/teklif_viewmodel.dart';
+import 'services/language_service.dart';
 
 import 'views/login_view.dart';
 import 'views/home_view.dart';
 import 'views/demo_home_view.dart';
 import 'views/settings_view.dart';
+import 'utils/localization_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +30,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => FirmaViewModel()),
         ChangeNotifierProvider(create: (_) => MusteriViewModel()),
         ChangeNotifierProvider(create: (_) => TeklifViewModel()),
+        ChangeNotifierProvider(create: (_) => LanguageService()),
       ],
       child: const ProposalApp(),
     ),
@@ -37,14 +42,25 @@ class ProposalApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Proposal App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
-      home: const WelcomeView(),
+    return Consumer<LanguageService>(
+      builder: (context, languageService, child) {
+        return MaterialApp(
+          title: 'Proposal App',
+          debugShowCheckedModeBanner: false,
+          locale: languageService.appLocale,
+          supportedLocales: LanguageService.supportedLocales,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+            useMaterial3: true,
+          ),
+          home: const WelcomeView(),
+        );
+      },
     );
   }
 }
@@ -67,17 +83,17 @@ class WelcomeView extends StatelessWidget {
                 color: Colors.blue,
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Proposal App',
-                style: TextStyle(
+              Text(
+                LocalizationHelper.getString(context, 'appTitle'),
+                style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Teklif oluşturma ve yönetim uygulaması',
-                style: TextStyle(
+              Text(
+                LocalizationHelper.getString(context, 'appDescription'),
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
@@ -94,9 +110,9 @@ class WelcomeView extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text(
-                    'Demo Modunda Dene',
-                    style: TextStyle(fontSize: 16),
+                  child: Text(
+                    LocalizationHelper.getString(context, 'tryDemoMode'),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),
@@ -111,9 +127,9 @@ class WelcomeView extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text(
-                    'Giriş Yap',
-                    style: TextStyle(fontSize: 16),
+                  child: Text(
+                    LocalizationHelper.getString(context, 'login'),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),

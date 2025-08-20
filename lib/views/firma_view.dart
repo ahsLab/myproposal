@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import '../models/firma.dart';
 import '../viewmodels/firma_viewmodel.dart';
 import '../services/local_file_service.dart';
+import '../utils/localization_helper.dart';
 
 class FirmaView extends StatefulWidget {
   const FirmaView({super.key});
@@ -46,14 +47,14 @@ class _FirmaViewState extends State<FirmaView> {
       context: context,
       builder: (_) {
         return AlertDialog(
-          title: Text(firma == null ? 'Yeni Firma' : 'Firma Güncelle'),
+          title: Text(firma == null ? LocalizationHelper.getString(context, 'addCompany') : LocalizationHelper.getString(context, 'edit')),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(controller: _isimController, decoration: const InputDecoration(labelText: 'Firma Adı')),
-                TextField(controller: _adresController, decoration: const InputDecoration(labelText: 'Adres')),
-                TextField(controller: _telefonController, decoration: const InputDecoration(labelText: 'Telefon')),
+                TextField(controller: _isimController, decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'companyName'))),
+                TextField(controller: _adresController, decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'companyAddress'))),
+                TextField(controller: _telefonController, decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'companyPhone'))),
                 const SizedBox(height: 10),
                 TextButton.icon(
                   icon: const Icon(Icons.image),
@@ -71,7 +72,7 @@ class _FirmaViewState extends State<FirmaView> {
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text('İptal')),
+            TextButton(onPressed: () => Navigator.pop(context), child: Text(LocalizationHelper.getString(context, 'cancel'))),
             ElevatedButton(
               onPressed: () async {
                 final viewModel = Provider.of<FirmaViewModel>(context, listen: false);
@@ -86,8 +87,8 @@ class _FirmaViewState extends State<FirmaView> {
 
                 final yeniFirma = Firma(
                   id: id,
-                  isim: _isimController.text,
-                  adres: _adresController.text,
+                  isim: LocalizationHelper.capitalizeWords(_isimController.text),
+                  adres: LocalizationHelper.capitalizeWords(_adresController.text),
                   telefon: _telefonController.text,
                   logoUrl: logoPath,
                 );
@@ -99,7 +100,7 @@ class _FirmaViewState extends State<FirmaView> {
                 }
                 Navigator.pop(context);
               },
-              child: const Text('Kaydet'),
+              child: Text(LocalizationHelper.getString(context, 'save')),
             ),
           ],
         );
@@ -113,7 +114,7 @@ class _FirmaViewState extends State<FirmaView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Firmalar"),
+        title: Text(LocalizationHelper.getString(context, 'companyManagement')),
       ),
       body: ListView.builder(
         itemCount: firmalar.length,

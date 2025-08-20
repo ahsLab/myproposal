@@ -6,6 +6,7 @@ import 'demo_musteri_view.dart';
 import 'demo_teklif_view.dart';
 import 'demo_teklif_list_view.dart';
 import '../main.dart';
+import '../utils/localization_helper.dart';
 
 // AuthWrapper'ı main.dart'tan import etmek için
 import '../main.dart';
@@ -17,7 +18,7 @@ class DemoHomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Demo Modu"),
+        title: Text(LocalizationHelper.getString(context, 'demoMode')),
         backgroundColor: Colors.orange,
         foregroundColor: Colors.white,
         actions: [
@@ -29,7 +30,7 @@ class DemoHomeView extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => const AuthWrapper()),
                 );
               },
-              tooltip: 'Giriş Yap',
+              tooltip: LocalizationHelper.getString(context, 'login'),
             )
         ],
       ),
@@ -45,22 +46,22 @@ class DemoHomeView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.orange.shade200),
               ),
-              child: const Column(
+              child: Column(
                 children: [
-                  Icon(Icons.info_outline, color: Colors.orange, size: 24),
-                  SizedBox(height: 8),
+                  const Icon(Icons.info_outline, color: Colors.orange, size: 24),
+                  const SizedBox(height: 8),
                   Text(
-                    'Demo Modu',
-                    style: TextStyle(
+                    LocalizationHelper.getString(context, 'demoMode'),
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.orange,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
-                    'Bu modda oluşturduğunuz veriler sadece cihazınızda saklanır ve giriş yaptığınızda kaybolur.',
-                    style: TextStyle(fontSize: 14),
+                    LocalizationHelper.getString(context, 'demoModeDescription'),
+                    style: const TextStyle(fontSize: 14),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -70,7 +71,7 @@ class DemoHomeView extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DemoFirmaView())),
               icon: const Icon(Icons.business),
-              label: const Text("Firma Yönetimi (Demo)"),
+              label: Text(LocalizationHelper.getString(context, 'demoCompanyManagement')),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
@@ -79,7 +80,7 @@ class DemoHomeView extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DemoMusteriView())),
               icon: const Icon(Icons.people),
-              label: const Text("Müşteri Yönetimi (Demo)"),
+              label: Text(LocalizationHelper.getString(context, 'demoCustomerManagement')),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
@@ -88,7 +89,7 @@ class DemoHomeView extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DemoTeklifView())),
               icon: const Icon(Icons.description),
-              label: const Text("Teklif Oluştur (Demo)"),
+              label: Text(LocalizationHelper.getString(context, 'demoCreateProposal')),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
@@ -97,7 +98,7 @@ class DemoHomeView extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DemoTeklifListView())),
               icon: const Icon(Icons.history),
-              label: const Text("Geçmiş Teklifler (Demo)"),
+              label: Text(LocalizationHelper.getString(context, 'demoProposalHistory')),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
@@ -113,7 +114,7 @@ class DemoHomeView extends StatelessWidget {
                   );
                 },
                 icon: const Icon(Icons.login),
-                label: const Text("Tam Özellikler İçin Giriş Yap"),
+                label: Text(LocalizationHelper.getString(context, 'fullFeaturesLogin')),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),

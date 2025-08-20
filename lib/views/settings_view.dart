@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
+import '../services/language_service.dart';
+import '../utils/localization_helper.dart';
+import '../widgets/feedback_dialog.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -10,14 +14,14 @@ class SettingsView extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Hesabı Sil'),
-          content: const Text(
-            'Bu işlem geri alınamaz. Hesabınız ve tüm verileriniz kalıcı olarak silinecektir. Devam etmek istediğinizden emin misiniz?',
+          title: Text(LocalizationHelper.getString(context, 'deleteAccount')),
+          content: Text(
+            LocalizationHelper.getString(context, 'deleteAccountConfirmation'),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('İptal'),
+              child: Text(LocalizationHelper.getString(context, 'cancel')),
             ),
             TextButton(
               onPressed: () async {
@@ -25,7 +29,7 @@ class SettingsView extends StatelessWidget {
                 await _deleteAccount(context);
               },
               style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('Hesabı Sil'),
+              child: Text(LocalizationHelper.getString(context, 'deleteAccount')),
             ),
           ],
         );
@@ -53,12 +57,12 @@ class SettingsView extends StatelessWidget {
       // Ana sayfaya yönlendir
       Navigator.of(context).popUntil((route) => route.isFirst);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Hesabınız başarıyla silindi')),
+        SnackBar(content: Text(LocalizationHelper.getString(context, 'accountDeleted'))),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Hesap silinirken bir hata oluştu'),
+        SnackBar(
+          content: Text(LocalizationHelper.getString(context, 'accountDeleteError')),
           backgroundColor: Colors.red,
         ),
       );
@@ -70,20 +74,20 @@ class SettingsView extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Profil & Ayarlar")),
+      appBar: AppBar(title: Text(LocalizationHelper.getString(context, 'profileSettings'))),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Email: ${user?.email ?? '-'}", style: const TextStyle(fontSize: 16)),
+            Text("${LocalizationHelper.getString(context, 'email')}: ${user?.email ?? '-'}", style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context).popUntil((route) => route.isFirst);
               },
-              child: const Text("Oturumu Kapat"),
+              child: Text(LocalizationHelper.getString(context, 'logout')),
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -94,20 +98,66 @@ class SettingsView extends StatelessWidget {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                child: const Text("Hesabımı Sil"),
+                child: Text(LocalizationHelper.getString(context, 'deleteAccount')),
               ),
             ),
-            const Divider(height: 40),
-            const Text("Tema", style: TextStyle(fontSize: 18)),
-            SwitchListTile(
-              value: Theme.of(context).brightness == Brightness.dark,
-              title: const Text("Karanlık Mod"),
-              onChanged: (value) {
-                // Bu kısım Provider ya da ayar yöneticisiyle değiştirilebilir
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Tema değiştirme henüz aktif değil.")),
+          
+            Text(LocalizationHelper.getString(context, 'languageSettings'), style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 6),
+            Consumer<LanguageService>(
+              builder: (context, languageService, child) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      LocalizationHelper.getString(context, 'defaultLanguage'),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                  
+                    Text(
+                      LocalizationHelper.getString(context, 'defaultPdfLanguage'),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 8),
+                    ...languageService.getLanguageOptions().map((entry) => 
+                      RadioListTile<String>(
+                        title: Text(entry.value),
+                        value: entry.key,
+                        groupValue: languageService.pdfLocale.languageCode,
+                        onChanged: (value) async {
+                          if (value != null) {
+                            await languageService.setPdfLanguage(value);
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(LocalizationHelper.getString(context, 'pdfLanguageChanged'))),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
+            ),
+            const Divider(height: 40),
+            Text(LocalizationHelper.getString(context, 'suggestions'), style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const FeedbackDialog(),
+                  );
+                },
+                icon: const Icon(Icons.feedback),
+                label: Text(LocalizationHelper.getString(context, 'contactUs')),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
             ),
           ],
         ),

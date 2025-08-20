@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/musteri_viewmodel.dart';
 import '../models/musteri.dart';
+import '../utils/localization_helper.dart';
 
 class MusteriView extends StatefulWidget {
   const MusteriView({super.key});
@@ -39,41 +40,41 @@ class _MusteriViewState extends State<MusteriView> {
       context: context,
       builder: (_) {
         return AlertDialog(
-          title: Text(musteri == null ? 'Yeni Müşteri' : 'Müşteri Güncelle'),
+          title: Text(musteri == null ? LocalizationHelper.getString(context, 'addCustomer') : LocalizationHelper.getString(context, 'edit')),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(controller: _adController, decoration: const InputDecoration(labelText: 'Ad')),
-              TextField(controller: _soyadController, decoration: const InputDecoration(labelText: 'Soyad')),
-              TextField(controller: _adresController, decoration: const InputDecoration(labelText: 'Adres')),
-              TextField(controller: _telefonController, decoration: const InputDecoration(labelText: 'Telefon')),
+              TextField(controller: _adController, decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'customerName'))),
+              TextField(controller: _soyadController, decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'customerName'))),
+              TextField(controller: _adresController, decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'customerAddress'))),
+              TextField(controller: _telefonController, decoration: InputDecoration(labelText: LocalizationHelper.getString(context, 'customerPhone'))),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text('İptal')),
+            TextButton(onPressed: () => Navigator.pop(context), child: Text(LocalizationHelper.getString(context, 'cancel'))),
             ElevatedButton(
               onPressed: () {
                 final viewModel = Provider.of<MusteriViewModel>(context, listen: false);
                 if (musteri == null) {
                   viewModel.addMusteri(
-                    _adController.text,
-                    _soyadController.text,
-                    _adresController.text,
+                    LocalizationHelper.capitalizeWords(_adController.text),
+                    LocalizationHelper.capitalizeWords(_soyadController.text),
+                    LocalizationHelper.capitalizeWords(_adresController.text),
                     _telefonController.text,
                   );
                 } else {
                   final updated = Musteri(
                     id: musteri.id,
-                    ad: _adController.text,
-                    soyad: _soyadController.text,
-                    adres: _adresController.text,
+                    ad: LocalizationHelper.capitalizeWords(_adController.text),
+                    soyad: LocalizationHelper.capitalizeWords(_soyadController.text),
+                    adres: LocalizationHelper.capitalizeWords(_adresController.text),
                     telefon: _telefonController.text,
                   );
                   viewModel.updateMusteri(updated);
                 }
                 Navigator.pop(context);
               },
-              child: const Text('Kaydet'),
+              child: Text(LocalizationHelper.getString(context, 'save')),
             ),
           ],
         );
@@ -86,7 +87,7 @@ class _MusteriViewState extends State<MusteriView> {
     final musteriler = Provider.of<MusteriViewModel>(context).musteriler;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Müşteriler')),
+      appBar: AppBar(title: Text(LocalizationHelper.getString(context, 'customerManagement'))),
       body: ListView.builder(
         itemCount: musteriler.length,
         itemBuilder: (context, index) {
