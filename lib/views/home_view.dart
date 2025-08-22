@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../utils/localization_helper.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'login_view.dart';
 import 'firma_view.dart';
@@ -19,7 +20,7 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Ana Sayfa"),
+        title: const Text("MyProposal"),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -37,23 +38,23 @@ class HomeView extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FirmaView())),
-              child: const Text("Firma Yönetimi"),
+              child:  Text(LocalizationHelper.getString(context, 'companyManagement')),
             ),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MusteriView())),
-              child: const Text("Müşteri Yönetimi"),
+              child:  Text(LocalizationHelper.getString(context, 'customerManagement')),
             ),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TeklifView())),
-              child: const Text("Teklif Oluştur"),
+              child:  Text(LocalizationHelper.getString(context, 'createProposal')),
             ),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TeklifListView())),
-              child: const Text("Geçmiş Teklifler"),
+              child:Text(LocalizationHelper.getString(context, 'proposalHistory')),
             ),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsView())),
-              child: const Text("Profil ve Ayarlar"),
+              child:Text(LocalizationHelper.getString(context, 'profileSettings')),
             ),
           ],
         ),

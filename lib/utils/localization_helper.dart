@@ -38,6 +38,8 @@ class LocalizationHelper {
         return 'Try Demo Mode';
       case 'login':
         return 'Login';
+      case 'register':
+        return 'Register';
       case 'logout':
         return 'Logout';
       case 'deleteAccount':
@@ -137,6 +139,8 @@ class LocalizationHelper {
         return 'Probar Modo Demo';
       case 'login':
         return 'Iniciar Sesión';
+      case 'register':
+        return 'Registrarse';
       case 'logout':
         return 'Cerrar Sesión';
       case 'deleteAccount':
@@ -236,6 +240,8 @@ class LocalizationHelper {
         return 'Demo Modunda Dene';
       case 'login':
         return 'Giriş Yap';
+      case 'register':
+        return 'Kayıt Ol';
       case 'logout':
         return 'Oturumu Kapat';
       case 'deleteAccount':
